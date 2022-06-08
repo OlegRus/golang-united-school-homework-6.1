@@ -81,9 +81,10 @@ func (b *box) SumArea() float64 {
 func (b *box) RemoveAllCircles() error {
 	newContainer := []Shape{}
 	for _, shape := range b.shapes {
-		if _, ok := shape.(Circle); !ok {
-			newContainer = append(newContainer, shape)
+		if _, ok := shape.(*Circle); ok {
+			continue
 		}
+		newContainer = append(newContainer, shape)
 	}
 	if len(newContainer) == len(b.shapes) {
 		return fmt.Errorf("Circles not founded in box")
