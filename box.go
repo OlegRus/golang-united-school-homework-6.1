@@ -2,6 +2,8 @@ package golang_united_school_homework
 
 import "fmt"
 
+var outOfRange error = fmt.Errorf("Out of capacity limit")
+
 // box contains list of shapes and able to perform operations on them
 type box struct {
 	shapes         []Shape
@@ -18,7 +20,7 @@ func NewBox(shapesCapacity int) *box {
 // AddShape adds shape to the box
 // returns the error in case it goes out of the shapesCapacity range.
 func (b *box) AddShape(shape Shape) error {
-	if len(b.shapes) > b.shapesCapacity {
+	if len(b.shapes) >= b.shapesCapacity {
 		return fmt.Errorf("Out of capacity limit")
 	}
 	b.shapes = append(b.shapes, shape)
@@ -29,7 +31,7 @@ func (b *box) AddShape(shape Shape) error {
 // whether shape by index doesn't exist or index went out of the range, then it returns an error
 func (b *box) GetByIndex(i int) (Shape, error) {
 	if i >= len(b.shapes) {
-		return nil, fmt.Errorf("Out of box range")
+		return nil, outOfRange
 	}
 	return b.shapes[i], nil
 }
@@ -38,7 +40,7 @@ func (b *box) GetByIndex(i int) (Shape, error) {
 // whether shape by index doesn't exist or index went out of the range, then it returns an error
 func (b *box) ExtractByIndex(i int) (Shape, error) {
 	if i >= len(b.shapes) {
-		return nil, fmt.Errorf("Out of box range")
+		return nil, outOfRange
 	}
 	shape := b.shapes[i]
 	b.shapes = append(b.shapes[0:i], b.shapes[i+1:]...)
@@ -49,11 +51,11 @@ func (b *box) ExtractByIndex(i int) (Shape, error) {
 // whether shape by index doesn't exist or index went out of the range, then it returns an error
 func (b *box) ReplaceByIndex(i int, shape Shape) (Shape, error) {
 	if i >= len(b.shapes) {
-		return nil, fmt.Errorf("Out of box range")
+		return nil, outOfRange
 	}
-	old_shape := b.shapes[i]
+	oldShape := b.shapes[i]
 	b.shapes[i] = shape
-	return old_shape, nil
+	return oldShape, nil
 }
 
 // SumPerimeter provides sum perimeter of all shapes in the list.
@@ -77,15 +79,15 @@ func (b *box) SumArea() float64 {
 // RemoveAllCircles removes all circles in the list
 // whether circles are not exist in the list, then returns an error
 func (b *box) RemoveAllCircles() error {
-	new_container := []Shape{}
+	newContainer := []Shape{}
 	for _, shape := range b.shapes {
 		if _, ok := shape.(Circle); !ok {
-			new_container = append(new_container, shape)
+			newContainer = append(newContainer, shape)
 		}
 	}
-	if len(new_container) == len(b.shapes) {
+	if len(newContainer) == len(b.shapes) {
 		return fmt.Errorf("Circles not founded in box")
 	}
-	b.shapes = new_container
+	b.shapes = newContainer
 	return nil
 }
